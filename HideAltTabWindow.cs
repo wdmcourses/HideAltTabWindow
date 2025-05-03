@@ -8,22 +8,37 @@ using System.Threading;
 class HideAltTabWindow {
   [DllImport("user32.dll")]
   private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
   [DllImport("user32.dll")]
   private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
   [DllImport("user32.dll")]
   private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
   [DllImport("user32.dll")]
   private static extern bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, uint dwFlags);
+  [DllImport("user32.dll")]
+  private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+  [DllImport("user32.dll")]
+  private static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")]
+  private static extern bool SetForegroundWindow(IntPtr hWnd);
 
   private const int GWL_EXSTYLE = -20;
   private const int WS_EX_LAYERED = 0x80000;
   private const int WS_EX_TRANSPARENT = 0x20;
   private const int LWA_ALPHA = 0x2;
+  private const int VK_MENU = 0x12;
+  private const int VK_TAB = 0x09;
+  private const uint KEYEVENTF_KEYUP = 0x02;
 
   static void Main() {
+    IntPtr ourWindow = GetForegroundWindow();
+    keybd_event(VK_MENU, 0, 0, UIntPtr.Zero);
+    keybd_event(VK_TAB, 0, 0, UIntPtr.Zero);
+    Thread.Sleep(50);
+    keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+    keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+    Thread.Sleep(1000);
+    SetForegroundWindow(ourWindow);
+
     if (IsRunAsAdministrator()) {
       RemoveFromStartup();
       RestartExplorer();
@@ -88,9 +103,7 @@ class HideAltTabWindow {
   static void RestartExplorer() {
     try {
       Process.Start("taskkill", "/F /IM explorer.exe");
-
       Thread.Sleep(1000);
-
       Process.Start("explorer.exe");
       Console.WriteLine("Explorer restarted successfully.");
     } catch (Exception ex) {
