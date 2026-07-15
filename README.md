@@ -2,7 +2,7 @@
 Tool to hide Alt+Tab window in Windows.
 
 ## Run/Autorun:
-1. Download [HideAltTabWindow.exe](https://github.com/agragregra/HideAltTabWindow/raw/refs/heads/main/HideAltTabWindow.exe)
+1. Download [HideAltTabWindow.exe](https://github.com/wdmcourses/HideAltTabWindow/raw/refs/heads/main/HideAltTabWindow.exe)
 2. Run `HideAltTabWindow.exe` and press `Y` for autorun.
 
 ## Remove from Autorun:
